@@ -159,7 +159,7 @@ model = MyCNN()
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-n_epochs = 1
+n_epochs = 10
 hist = train(model, n_epochs, train_dl, val_dl)
 loss_hist_train, acc_hist_train, loss_hist_val, acc_hist_val = hist
 
@@ -173,12 +173,12 @@ def test(model, test_dl):
     with torch.no_grad():
         for X_batch, y_batch in test_dl:
             y_pred_proba = model(X_batch)
-            y_pred = torch.argmax(y_batch, 1)
-            is_correct = y_pred == y_batch
-            acc += is_correct.sum()
+            y_pred = torch.argmax(y_pred_proba, dim= 1)
+            is_correct = (y_pred == y_batch)
+            acc += is_correct.sum().item()
         acc /= n_test_samples
 
-    print(f"Test" f"Accuracy = {acc: .3f}")
+    print(f"\nTest accuracy = {acc: .3f}")
 
 # test 
-test(model, X_test, y_test)
+test(model, test_dl)
