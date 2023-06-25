@@ -73,8 +73,11 @@ class ImageDataset(Dataset):
 batch_size = 32
 train_set = ImageDataset(X_train, y_train, transform)
 val_set = ImageDataset(X_val, y_val, transform)
+test_set = ImageDataset(X_test, y_test, transform)
+
 train_dl = DataLoader(train_set, batch_size=batch_size)
 val_dl = DataLoader(val_set, batch_size=batch_size)
+test_dl = DataLoader(test_set, batch_size=batch_size)
 
 
 # create model
@@ -94,8 +97,7 @@ class MyCNN(nn.Module):
         lin = nn.Linear(8192, 5)
         activ = nn.Softmax(dim=1)
         self.module_list = nn.ModuleList(
-            [conv1, relu1, pool1, conv2, relu2, pool2, 
-             f, lin, activ]
+            [conv1, relu1, pool1, conv2, relu2, pool2, f, lin, activ]
         )
 
     def forward(self, X):
@@ -155,8 +157,28 @@ def train(model, n_epochs, train_dl, val_dl):
 # training
 model = MyCNN()
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr= 0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-n_epochs = 5
+n_epochs = 1
 hist = train(model, n_epochs, train_dl, val_dl)
 loss_hist_train, acc_hist_train, loss_hist_val, acc_hist_val = hist
+
+
+# define test function
+def test(model, test_dl):
+    n_test_samples = len(test_dl.dataset)
+    acc = 0
+
+    model.eval()
+    with torch.no_grad():
+        for X_batch, y_batch in test_dl:
+            y_pred_proba = model(X_batch)
+            y_pred = torch.argmax(y_batch, 1)
+            is_correct = y_pred == y_batch
+            acc += is_correct.sum()
+        acc /= n_test_samples
+
+    print(f"Test" f"Accuracy = {acc: .3f}")
+
+# test 
+test(model, X_test, y_test)

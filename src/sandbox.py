@@ -27,6 +27,6 @@ class MyCNN(nn.Module):
         return X
 
 
-X = torch.Tensor(32, 3, 64, 64)
+X = torch.Tensor(32, 3, 48, 64)
 model = MyCNN()
 print(model(X).shape)
