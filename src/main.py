@@ -82,21 +82,20 @@ class MyCNN(nn.Module):
     def __init__(self):
         super().__init__()
         # conv 1
-        conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
+        conv1 = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, padding=1)
         relu1 = nn.ReLU()
         pool1 = nn.MaxPool2d(kernel_size=2)
         # conv 2
-        conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1)
         relu2 = nn.ReLU()
         pool2 = nn.MaxPool2d(kernel_size=2)
         # linear
         f = nn.Flatten()
-        lin1 = nn.Linear(16384, 1024)
-        relu3 = nn.ReLU()
-        lin2 = nn.Linear(1024, 5)  # 5 classes
+        lin = nn.Linear(8192, 5)
         activ = nn.Softmax(dim=1)
         self.module_list = nn.ModuleList(
-            [conv1, relu1, pool1, conv2, relu2, pool2, f, lin1, relu3, lin2, activ]
+            [conv1, relu1, pool1, conv2, relu2, pool2, 
+             f, lin, activ]
         )
 
     def forward(self, X):
@@ -153,9 +152,10 @@ def train(model, n_epochs, train_dl, val_dl):
     return (loss_hist_train, acc_hist_train, loss_hist_val, acc_hist_val)
 
 
+# training
 model = MyCNN()
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr= 0.001)
 
 n_epochs = 5
 hist = train(model, n_epochs, train_dl, val_dl)

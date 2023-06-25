@@ -6,11 +6,11 @@ class MyCNN(nn.Module):
     def __init__(self):
         super().__init__()
         # conv 1
-        conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1)
+        conv1 = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, padding=1)
         relu1 = nn.ReLU()
         pool1 = nn.MaxPool2d(kernel_size=2)
         # conv 2
-        conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1)
         relu2 = nn.ReLU()
         pool2 = nn.MaxPool2d(kernel_size=2)
         # linear
